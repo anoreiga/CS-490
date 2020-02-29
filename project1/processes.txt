@@ -1,0 +1,6 @@
+ProcessID Priority Run Time
+Process1 5 12
+Process2 10 10 
+Process3 15 6 
+Process4 0 25
+Process5 99 9 

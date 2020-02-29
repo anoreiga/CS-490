@@ -1,13 +1,12 @@
-package javathreading;
+package project1;
+
 
 import java.io.*;
 import java.util.*;
 import java.util.Scanner;
 
-public class JavaThreading {
-    /**
-     * @param args the command line arguments
-     */
+public class project1 {
+
     public static void main(String args[]) throws Exception {
         FileWriter out = new FileWriter("Schedule.txt");
         
@@ -135,4 +134,4 @@ static class process implements Comparable {
             return this.time - ((processEvent)o).time;
         }
     }
-}       
+}
