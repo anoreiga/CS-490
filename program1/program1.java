@@ -1,137 +1,108 @@
-package project1;
+package program1;
 
 
 import java.io.*;
 import java.util.*;
-import java.util.Scanner;
+import java.lang.*;
 
-public class project1 {
-
-    public static void main(String args[]) throws Exception {
-        FileWriter out = new FileWriter("Schedule.txt");
+public class program1 {
+    public static void main(String args[]) throws InterruptedException {
+        //Object of a class that has both produce and consume methods
+        final ProduceConsume pc = new ProduceConsume();
         
-        out.write("\t" + "Schedule.txt Output File" + System.getProperty("line.seperator"));
-        out.flush();
-        
-        out.write("Process ID" + "" + "End Time" + "" + "Priority" + "" + "Run Time" + "" + System.getProperty("line.seperator"));
-        out.flush();
-        
-        PriorityQueue EventHeap = new PriorityQueue(); 
-        PriorityQueue ProcessHeap = new PriorityQueue();
-        
-        int global_time = 0; 
-        
-        Scanner in = new Scanner(new File("processes.txt"));
-        
-        boolean complete = false; 
-        
-        while(in.hasNext()) {
-            String processID = in.next();
-            
-            int priority = in.nextInt();
-            int time_run = in.nextInt();
-            
-            process process = new process(processID, priority, time_run);
-            complete = false;
-            
-            processEvent processEvent = new processEvent(complete, global_time, process);
-            
-            EventHeap.add(processEvent);
-            
-        }
-        
-        boolean busy = false; 
-        
-        while (EventHeap.size() > 0) {
-            processEvent event = (processEvent) EventHeap.remove();
-            
-            global_time = event.getTime();
-            
-            if(event.getComplete() == false) {
-                ProcessHeap.add(event.getProcess()); 
-                
-                if (busy == false); {
-                    process process = (process) ProcessHeap.remove();
-                    busy = true; 
-                    global_time = global_time + process.getRunTime();
-                    complete = true; 
-                    processEvent processEvent = new processEvent(complete, global_time, process);
+        //creating producer thread 
+        Thread T1 = new Thread(new Runnable() {
+            @Override 
+            public void run()
+            {
+                try {
+                    pc.produce();
+                }
+                catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
-            } else {
-                int total_time = global_time + event.getProcess().getRunTime();
-            
-        out.write(event.getProcess().getprocessID()+"\t"+global_time+"\t"+total_time+"\t"+event.getProcess().getRunTime()+System.getProperty("line.seperator"));
-            out.flush();
-            busy = false; 
-            
-            if(ProcessHeap.size() > 0) {
-                process process = (process) ProcessHeap.remove();
-                busy = true;
-                global_time = global_time + process.getRunTime();
-                complete = true; 
-                processEvent processEvent = new processEvent(complete, global_time, process);
+        });
+        
+        //create consumer thread 
+        Thread T2 = new Thread(new Runnable() {
+            @Override 
+            public void run()
+            {
+                try {
+                    pc.consume();
+                }
+                catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
-           }
-        }
-    }
-
-static class process implements Comparable {
-    private String processID;
-    private int priority;
-    private int run_time;
-    
-    public process(String processID, int priority, int runTime) {
-        this.processID = processID;
-        this.priority = priority; 
-        this.run_time = run_time;
+        });
+        
+        //start both threads
+        T1.start();
+        T2.start();
+        
+        //make T1 finish before T2
+        T1.join();
+        T2.join();
     }
     
-    public String getprocessID() {
-        return processID;
-    }
-    
-    public int getTime() {
-        return run_time;
-    }
-    
-    public int getRunTime() {
-        return run_time;
-    }
-    
-    public String toString() {
-        return processID + "\t" + priority + "\t" + run_time;
-    }
-    
-    public int compareTo(Object o) {
-        return this.priority - ((process)o).priority;
-    }
-}
-
-    static class processEvent implements Comparable {
-        boolean complete = false; 
-        int time; 
-        process process; 
-
-        public processEvent(boolean complete, int time, process process) {
-            this.complete = true; 
-            this.time = time; 
-            this.process = process; 
+    //Contains a list, producer (which adds items to the list) and consumer (removes items)
+    public static class ProduceConsume {
+        
+        //create a list shared by both producer and consumer 
+        //Size: 2
+        LinkedList<Integer> list = new LinkedList<>(); 
+        int capacity = 2;
+        
+        //Produce() function called by producer thread
+        public void produce() throws InterruptedException 
+        {
+            int value = 0; 
+            while (true) {
+                synchronized (this)
+                        {
+                            //producer waits while the list is full
+                            while (list.size() == capacity) 
+                                wait();
+                            System.out.println("Producer 1 finished Process: " + value);
+                            
+                            //inserting jobs into the list 
+                            list.add(value++);
+                            
+                            //letting consumer thread know that it can start consuming
+                            notify();
+                            
+                            //putting the thread to sleep 
+                            Thread.sleep(1000);
+                        }
+            }
         }
-
-        public int getTime() {
-            return time; 
+        
+        //Consume function used by consumer thread
+        public void consume() throws InterruptedException 
+        {
+            while(true) {
+                synchronized (this)
+                {
+                    //consumer thread waits when list is empty since it has nothing to consume
+                    while (list.size() == 0)
+                        wait();
+                    
+                    //retrieving first thing in the list 
+                    int value = list.removeFirst();
+                    
+                    System.out.println("Consumer 1 finished Process: " + value);
+                    
+                    //waking up producer thread 
+                    notify();
+                    
+                    //then making producer thread sleep
+                    Thread.sleep(1000);
+                            }
+            }
         }
-
-        public process getProcess() {
-            return this.process;
-        }
-
-        public boolean getComplete() {
-            return this.complete;
-        }
-
-        public int compareTo(Object o) {
-            return this.time - ((processEvent)o).time;
-        }
+        
+        
     }
 }
