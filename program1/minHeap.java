@@ -1,46 +1,102 @@
 package program1;
-import java.util.*;
-public class minHeap
-{
-    private ArrayList<int[]> nodes = new ArrayList<>();
-    private int size;
-    private int maxsize;
 
-    private static final int FRONT = 1;
-    private int parent (int position)
-    {
-        return position / 2;
-    }
+import java.util.ArrayList;
 
-    private int leftChild(int position)
-    {
-        return (2 * position);
-    }
+public class minHeap {
 
-    private int rightChild(int position)
-    {
-        return (2 * position) + 1;
-    }
+	private final Object lock;
 
-    private boolean isLeaf(int position)
-    {
-        if(position >= (size/2) && position <= size)
-        {
-            return true;
-        }
-        return false;
-    }
+	private ArrayList< Process > process;
 
-    private void swap(int position1, int position2)
-    {
-        Collections.swap(nodes, position1, position2);
-    }
+	/**
+	 * Creates the ProcessQueue with the initial capacity.
+	 *
+	 * @param initialCapacity The space to allocate the queue with.
+	 */
+	public minHeap ( int initialCapacity ) {
+		//this.queue = new PriorityBlockingQueue<>( initialCapacity );
+		this.process = new ArrayList<>( initialCapacity );
+		this.lock = new Object();
+	}
 
-    private void reHeap(int position)
-    {
-        if(!isLeaf(position))
-        {
-            if (nodes.get(position)[0])
-        }
-    }
+
+	private void heapify ( int n, int indexOfNode ) {
+		int indexOfSmallestNode = indexOfNode;
+		int indexOfLeftChild = 2 * indexOfNode + 1;
+		int indexOfRightChild = 2 * indexOfNode + 2;
+
+		// If left child is smaller than root
+		if ( indexOfLeftChild < n &&
+				     this.process.get(indexOfLeftChild).compareTo(this.process.get( indexOfSmallestNode ) ) > 0 ) {
+			indexOfSmallestNode = indexOfLeftChild;
+		}
+
+		// If right child is smaller than the smallest so far,
+		if ( indexOfRightChild < n &&
+				     this.process.get(indexOfRightChild).compareTo(this.process.get( indexOfSmallestNode ) ) > 0 ) {
+			indexOfSmallestNode = indexOfRightChild;
+		}
+
+		// If the index of the smallest node is not the root index,
+		if ( indexOfSmallestNode != indexOfNode ) {
+			// Swap them.
+			Process swap = this.process.get( indexOfNode );
+			this.process.set(indexOfNode, this.process.get( indexOfSmallestNode ) );
+			this.process.set( indexOfSmallestNode, swap );
+
+			// Recursively heapify the affected sub-tree
+			heapify( n, indexOfSmallestNode );
+		}
+	}
+
+	public boolean add (Process newProcess) {
+		boolean output = false;
+		synchronized ( this.lock ) {
+			output = this.process.add( newProcess );
+			// Heapify at the root.
+			this.sort();
+		}
+		return output;
+	}
+
+	public void clear () {
+		synchronized ( this.lock ) {
+			this.process.clear();
+		}
+	}
+
+	public void sort () {
+		synchronized ( this.lock ) {
+			// Build heap (rearrange array)
+			for ( int i = this.process.size() / 2 - 1; i >= 0; i-- )
+				heapify(this.process.size(), i );
+
+			// One by one extract an element from heap
+			for ( int i = this.process.size() - 1; i >= 0; i-- ) {
+				// Move current root to end
+				Process temp = this.process.get( 0 );
+				this.process.set(0, this.process.get( i ) );
+				this.process.set( i, temp );
+
+				// call max heapify on the reduced heap
+				heapify( i, 0 );
+			}
+		}
+	}
+
+	public Process removeHead () throws InterruptedException {
+		synchronized ( this.lock ) {
+			Process head = this.process.remove(0);
+			this.sort();
+			return head;
+		}
+	}
+
+	public int size () {
+		return this.process.size();
+	}
+
+	public boolean isEmpty () {
+		return this.size() == 0;
+	}
 }

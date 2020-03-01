@@ -12,22 +12,16 @@ public class consumerThread implements Runnable {
 	private static int lastId = 0;
 	private final long wait_miliseconds = 33;
 
-	private ProcessQueue processQueue;
+	private minHeap processQueue;
 	private int ProcessID;
-	/**
-	 * True if the thread is to continue consuming.
-	 */
-	private boolean isRunning;
 
-	/**
-	 * A variable to improve time reporting information about the thread.
-	 */
+	private boolean isRunning;
 	private String tabsPrepend;
 	//private FlagCommunicator flags;
 
 	private int totalConsumed;
 
-	public consumerThread ( ProcessQueue queue) {
+	public consumerThread ( minHeap queue) {
 		this.processQueue = queue;
 		this.ProcessID = ++ lastId;
 		//this.flags = fc;
@@ -59,11 +53,11 @@ public class consumerThread implements Runnable {
 	}
 
 	/**
-	 * Requests a node from {@link ProcessQueue} if there is one. If the queue is empty, waits.
+	 * Requests a node from {@link minHeap} if there is one. If the queue is empty, waits.
 	 *
 	 * @return the requested node.
 	 */
-	public Node requestNode () {
+	public Process requestNode () {
 		report( "is requesting a new node." );
 
 		while ( this.processQueue.isEmpty() ) {
@@ -81,24 +75,13 @@ public class consumerThread implements Runnable {
 
 		try {
 			return this.processQueue.removeHead();
-		} catch ( InterruptedException e ) {
+		} 
+                catch ( InterruptedException e ) {
 			report( "was interrupted." );
 			return null;
 		}
 	}
 
-	/**
-	 * @return the flags shared between threads.
-	 */
-	public FlagCommunicator getFlags () {
-		return flags;
-	}
-
-	/**
-	 * Reports the given message to the screen.
-	 *
-	 * @param message The message to send out to.
-	 */
 	private void report ( String message ) {
 		System.out.println( String.format( "%sConsumer %d %s", this.tabsPrepend, this.getId(), message ) );
 	}
@@ -123,7 +106,7 @@ public class consumerThread implements Runnable {
 		this.isRunning = true;
 		while ( this.isRunning ) {
 			try {
-				Node nodeToProcess = this.requestNode();
+				Process nodeToProcess = this.requestNode();
 
 				if ( nodeToProcess == null ) {
 					continue;
@@ -135,7 +118,7 @@ public class consumerThread implements Runnable {
 
 				String nodeStatistics = nodeToProcess.toString();
 
-				report( String.format( "finished %s at %s", nodeStatistics, Utility.formatDateTime( finishedProcessingTime ) ) );
+				report( String.format( "finished %s at %s", nodeStatistics, Utility.formatDateTime(finishedProcessingTime)));
 
 				this.totalConsumed++;
 
