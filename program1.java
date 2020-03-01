@@ -4,10 +4,13 @@ package program1;
 import java.io.*;
 import java.util.*;
 import java.lang.*;
+import java.util.Random;
 
 public class program1 {
     public static void main(String args[]) throws InterruptedException {
         //Object of a class that has both produce and consume methods
+        //Random rand = new Random();
+        
         final ProduceConsume pc = new ProduceConsume();
         
         //creating producer thread 
@@ -34,6 +37,7 @@ public class program1 {
                 }
                 catch (InterruptedException e) {
                     e.printStackTrace();
+                    System.out.println( " was interrupted.");
                 }
             }
         });
@@ -58,6 +62,8 @@ public class program1 {
         //Produce() function called by producer thread
         public void produce() throws InterruptedException 
         {
+           Random rand = new Random();
+
             int value = 0; 
             while (true) {
                 synchronized (this)
@@ -74,7 +80,7 @@ public class program1 {
                             notify();
                             
                             //putting the thread to sleep 
-                            Thread.sleep(1000);
+                            Thread.sleep(rand.nextInt(1000));
                         }
             }
         }
@@ -82,6 +88,7 @@ public class program1 {
         //Consume function used by consumer thread
         public void consume() throws InterruptedException 
         {
+            Random rand = new Random();
             while(true) {
                 synchronized (this)
                 {
@@ -98,7 +105,7 @@ public class program1 {
                     notify();
                     
                     //then making producer thread sleep
-                    Thread.sleep(1000);
+                    Thread.sleep(rand.nextInt(1000));
                             }
             }
         }
