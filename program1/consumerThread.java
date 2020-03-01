@@ -106,23 +106,24 @@ public class consumerThread implements Runnable {
 		this.isRunning = true;
 		while ( this.isRunning ) {
 			try {
-				Process nodeToProcess = this.requestNode();
+				Process node = this.requestNode();
 
-				if ( nodeToProcess == null ) {
+				if ( node == null ) {
 					continue;
 				}
 
-				nodeToProcess.run();
+				node.run();
 
-				LocalDateTime finishedProcessingTime = Utility.getCurrentTime();
+				LocalDateTime processFinished = LocalDateTime.now();
 
-				String nodeStatistics = nodeToProcess.toString();
+				String nodeStatistics = node.toString();
 
 				report( String.format( "finished %s at %s", nodeStatistics, Utility.formatDateTime(finishedProcessingTime)));
 
 				this.totalConsumed++;
 
-			} catch ( InterruptedException ex ) {
+			} catch ( InterruptedException ex ) 
+                        {
 				report( "was interrupted." );
 			}
 		}

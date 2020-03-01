@@ -8,14 +8,8 @@ public class minHeap {
 
 	private ArrayList< Process > process;
 
-	/**
-	 * Creates the ProcessQueue with the initial capacity.
-	 *
-	 * @param initialCapacity The space to allocate the queue with.
-	 */
-	public minHeap ( int initialCapacity ) {
-		//this.queue = new PriorityBlockingQueue<>( initialCapacity );
-		this.process = new ArrayList<>( initialCapacity );
+	public minHeap (int initCapacity) {
+		this.process = new ArrayList<>(initCapacity);
 		this.lock = new Object();
 	}
 
@@ -27,25 +21,25 @@ public class minHeap {
 
 		// If left child is smaller than root
 		if ( indexOfLeftChild < n &&
-				     this.process.get(indexOfLeftChild).compareTo(this.process.get( indexOfSmallestNode ) ) > 0 ) {
+				     this.process.get(indexOfLeftChild).compareTo(this.process.get(indexOfSmallestNode)) > 0) {
 			indexOfSmallestNode = indexOfLeftChild;
 		}
 
-		// If right child is smaller than the smallest so far,
+		// If right child is smaller than the smallest so far
 		if ( indexOfRightChild < n &&
-				     this.process.get(indexOfRightChild).compareTo(this.process.get( indexOfSmallestNode ) ) > 0 ) {
+				     this.process.get(indexOfRightChild).compareTo(this.process.get(indexOfSmallestNode) ) > 0 ) {
 			indexOfSmallestNode = indexOfRightChild;
 		}
 
-		// If the index of the smallest node is not the root index,
+		// If the index of the smallest node is not the root index
 		if ( indexOfSmallestNode != indexOfNode ) {
 			// Swap them.
 			Process swap = this.process.get( indexOfNode );
-			this.process.set(indexOfNode, this.process.get( indexOfSmallestNode ) );
+			this.process.set(indexOfNode, this.process.get(indexOfSmallestNode) );
 			this.process.set( indexOfSmallestNode, swap );
 
 			// Recursively heapify the affected sub-tree
-			heapify( n, indexOfSmallestNode );
+			heapify(n, indexOfSmallestNode);
 		}
 	}
 
