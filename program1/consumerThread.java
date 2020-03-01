@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
  * Requests nodes from the process queue, simulates execution for each process,
  * reports stats on the process and its task, etc.
  */
-public class consumeThread implements Runnable {
+public class consumerThread implements Runnable {
     
 	private static int lastId = 0;
 	private final long wait_miliseconds = 33;
@@ -23,27 +23,14 @@ public class consumeThread implements Runnable {
 	 * A variable to improve time reporting information about the thread.
 	 */
 	private String tabsPrepend;
+	//private FlagCommunicator flags;
 
-	/**
-	 * Communicates flags between threads.
-	 */
-	private FlagCommunicator flags;
-
-	/**
-	 * The total number of nodes consumed by this consumer.
-	 */
 	private int totalConsumed;
 
-	/**
-	 * Creates a Consumer Thread with the given shared queue.
-	 *
-	 * @param queue The queue to share with all other threads.
-	 * @param fc    The flags that are to be communicated between threads.
-	 */
-	public ConsumerThread ( ProcessQueue queue, FlagCommunicator fc ) {
+	public consumerThread ( ProcessQueue queue) {
 		this.processQueue = queue;
 		this.ProcessID = ++ lastId;
-		this.flags = fc;
+		//this.flags = fc;
 		this.totalConsumed = 0;
 		this.isRunning = false;
 
