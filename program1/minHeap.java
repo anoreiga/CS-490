@@ -18,16 +18,15 @@ public class minHeap {
 		int indexOfSmallestNode = indexOfNode;
 		int indexOfLeftChild = 2 * indexOfNode + 1;
 		int indexOfRightChild = 2 * indexOfNode + 2;
-
+                
 		// If left child is smaller than root
-		if ( indexOfLeftChild < n &&
-				     this.process.get(indexOfLeftChild).compareTo(this.process.get(indexOfSmallestNode)) > 0) {
+		if ( indexOfLeftChild < n && this.process.get(indexOfLeftChild).compareTo(this.process.get(indexOfSmallestNode)) > 0) {
 			indexOfSmallestNode = indexOfLeftChild;
 		}
 
 		// If right child is smaller than the smallest so far
 		if ( indexOfRightChild < n &&
-				     this.process.get(indexOfRightChild).compareTo(this.process.get(indexOfSmallestNode) ) > 0 ) {
+				     this.process.get(indexOfRightChild).compareTo(this.process.get(indexOfSmallestNode)) > 0) {
 			indexOfSmallestNode = indexOfRightChild;
 		}
 
