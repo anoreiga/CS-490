@@ -1,6 +1,8 @@
 package program1;
 
-import java.time.LocalDateTime;
+//import java.time.LocalDateTime;
+import java.time.*;
+import java.time.format.DateTimeFormatter;
 
 /**
  * Consumes tasks and allows them to execute.
@@ -103,6 +105,7 @@ public class consumerThread implements Runnable {
 	 */
 	@Override
 	public void run () {
+                DateTimeFormatter formatDate = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
 		this.isRunning = true;
 		while ( this.isRunning ) {
 			try {
@@ -118,7 +121,7 @@ public class consumerThread implements Runnable {
 
 				String nodeStatistics = node.toString();
 
-				report( String.format( "finished %s at %s", nodeStatistics, Utility.formatDateTime(finishedProcessingTime)));
+				report( String.format( "finished %s at %s", nodeStatistics, formatDate.format(processFinished)));
 
 				this.totalConsumed++;
 
