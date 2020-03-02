@@ -7,7 +7,7 @@ public class producerThread implements Runnable {
 	/**
 	 * The maximum number of nodes to produce.
 	 */
-	private final int MAX_NUM_OF_NODES_TO_PRODUCE = 75;
+	private final int maxNodes = 75;
 	/**
 	 * The time to wait in idle.
 	 */
@@ -86,7 +86,7 @@ public class producerThread implements Runnable {
 	 * @return true if the number of nodes generated is >= to the max number of nodes the producer can make. False otherwise.
 	 */
 	public boolean isFinished () {
-		return this.nodeCount >= this.MAX_NUM_OF_NODES_TO_PRODUCE;
+		return this.nodeCount >= this.maxNodes;
 	}
 
 	/**
@@ -95,7 +95,7 @@ public class producerThread implements Runnable {
 	 * @return
 	 */
 	private int getRemainingNodesToProduce () {
-		return this.MAX_NUM_OF_NODES_TO_PRODUCE - this.nodeCount;
+		return this.maxNodes - this.nodeCount;
 	}
 
 	/**
@@ -106,7 +106,7 @@ public class producerThread implements Runnable {
 	 * @return a clamped random number of nodes to produce.
 	 */
 	private int getRandomNumOfNodesToProduce () {
-		int possibility = Functions.getNuminRange( 8, this.MAX_NUM_OF_NODES_TO_PRODUCE / 4 );
+		int possibility = Functions.getNuminRange(8, this.maxNodes / 4 );
 		int remainingCount = getRemainingNodesToProduce();
 		if ( possibility > remainingCount ) {
 			possibility = remainingCount;

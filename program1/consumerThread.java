@@ -1,8 +1,11 @@
 package program1;
 
 //import com.sun.org.apache.bcel.internal.classfile.Utility;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Date;
+import sun.security.pkcs11.wrapper.Functions;
 
 /**
  * Consumes tasks and allows them to execute.
@@ -43,11 +46,7 @@ public class consumerThread implements Runnable {
 	 * The time in milliseconds to wait while idling.
 	 */
 	private final long IDLE_WAIT_IN_MILLISECONDS = 33;
-	/**
-	 * The queue of processes to run.
-	 */
-	private minHeap minHeap;
-	/**
+        /*
 	 * The id of the consumer thread.
 	 */
 	private int id;
@@ -108,7 +107,7 @@ public class consumerThread implements Runnable {
 
 			report( "cannot find new node." );
 
-			if ( flags.getComplete() ) {
+			if ( flags.producerComplete = true ) {
 				report("thinks there won't be any more nodes to request.");
 				this.isRunning = false;
 				return null;
@@ -161,13 +160,15 @@ public class consumerThread implements Runnable {
 					continue;
 				}
 
-				nodeToProcess.run();
+				//nodeToProcess.run();
 
 				LocalDateTime finishedProcessingTime = java.time.LocalDateTime.now();
 
 				String nodeStatistics = nodeToProcess.toString();
-
-				report( String.format( "finished %s at %s", nodeStatistics, Utility.formatDateTime( finishedProcessingTime ) ) );
+                                //Date dateFormat = new Date();
+                                SimpleDateFormat sf = new SimpleDateFormat("hh:mm:ss a zzz"); 
+                                
+				report( String.format( "finished %s at %s", nodeStatistics, sf.format( finishedProcessingTime ) ) );
 
 				this.totalConsumed++;
 
