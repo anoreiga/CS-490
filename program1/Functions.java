@@ -29,6 +29,8 @@ class RandomNumber {
 
 //node data structure 
 class Node implements Comparable {
+    
+    //TODO: rework Run function for node 
     private String processID;
     private int priority;
     private int run_time;

@@ -159,8 +159,8 @@ public class consumerThread implements Runnable {
 				if ( nodeToProcess == null ) {
 					continue;
 				}
-
-				//nodeToProcess.run();
+                                //TODO: rework Run() function for the node class
+				//nodeToProcess.run()
 
 				LocalDateTime finishedProcessingTime = java.time.LocalDateTime.now();
 
