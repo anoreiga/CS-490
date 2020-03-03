@@ -9,9 +9,10 @@ import java.text.SimpleDateFormat;
 import java.time.*;
 
 class ThreadFlags {
-        boolean producerComplete = false; 
+  
+        private boolean producerComplete; 
 
-        public ThreadFlags(boolean producerComplete) 
+        public ThreadFlags() 
         {
             this.producerComplete = false; 
         }
@@ -101,8 +102,5 @@ class Node implements Comparable {
             return Integer.compare(this.getPriority(), other.getPriority());
     }
         return - 1; 
-    }
-}
-    }
     }
 }
