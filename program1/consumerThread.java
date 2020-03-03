@@ -70,6 +70,7 @@ public class consumerThread implements Runnable {
 	private int totalConsumed;
 
 	public consumerThread ( minHeap heap, ThreadFlags flags ) {
+
 		this.minHeap = heap;
 		this.id = ++ lastId;
     

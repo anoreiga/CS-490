@@ -5,10 +5,6 @@
 
 package program1;
 
-/**
- *
- * @author Alexandra
- */
 public class main {
     public static void main(String[] args) { 
         minHeap heap = new minHeap(75);
