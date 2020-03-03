@@ -69,7 +69,7 @@ public class consumerThread implements Runnable {
 	 */
 	private int totalConsumed;
 
-	public consumerThread ( minHeap heap ) {
+	public consumerThread ( minHeap heap, ThreadFlags flags ) {
 		this.minHeap = heap;
 		this.id = ++ lastId;
     
@@ -199,7 +199,7 @@ public class consumerThread implements Runnable {
 					continue;
 				}
                                 //TODO: rework Run() function for the node class
-				nodeToProcess.run()
+				nodeToProcess.run();
 
 				LocalDateTime finishedProcessingTime = java.time.LocalDateTime.now();
 

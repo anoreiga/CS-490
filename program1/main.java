@@ -1,8 +1,8 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+//NAMES: Adam McFry & Alexandra Noreiga
+//DATE: 3/9/20
+//CLASS: CS 490-01
+//PURPOSE: this program simulates synchronization of processes and threading in Java
+
 package program1;
 
 /**
@@ -10,5 +10,49 @@ package program1;
  * @author Alexandra
  */
 public class main {
-    
+    public static void main(String[] args) { 
+        minHeap heap = new minHeap(75);
+        
+        ThreadFlags flags = new ThreadFlags(); 
+        
+        //creating consumer threads
+        consumerThread ct1 = new consumerThread(heap, flags);
+        consumerThread ct2 = new consumerThread(heap, flags);
+        
+        //initialize consumer threads
+        Thread consume1 = new Thread(ct1);
+        Thread consume2 = new Thread(ct2);
+        
+        //starting consumer threads
+        consume1.start();
+        consume2.start();
+        
+        //creating producer threads
+        producerThread pt1 = new producerThread(heap, flags);
+        
+        //initializing producer thread 
+        Thread produce1 = new Thread(pt1);
+        
+        produce1.start();
+        
+        try {
+            produce1.join(); //joining producer thread
+            
+            //joining consumer threads
+            consume1.join();
+            consume2.join();
+        } 
+        catch (InterruptedException ex) { 
+            System.out.println("Error: Threads were interrupted."); 
+        }
+        
+        //print out how many nodes the producer created in the heap.
+        System.out.println(String.format("Producer created %d nodes in the heap.", pt1.getNodeCount()));
+        
+        //print out how many nodes are remaining in the heap. 
+        System.out.println(String.format("Producer thinks there are %d nodes remaining...", heap.size()));
+                    
+        }
+                
+    }
 }
