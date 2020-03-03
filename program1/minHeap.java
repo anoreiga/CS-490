@@ -4,6 +4,7 @@ import java.util.ArrayList;
 //********************
 //Handles sorting/processesing of nodes
 //********************
+
 public class minHeap {
 
 	private final Object lock;
@@ -15,7 +16,15 @@ public class minHeap {
 		this.lock = new Object();
 	}
 
-        //heap sort function 
+ 
+	private ArrayList< Process > process;
+
+	public minHeap (int initCapacity) {
+		this.process = new ArrayList<>(initCapacity);
+		this.lock = new Object();
+	}
+
+
 	private void heapify ( int n, int indexOfNode ) {
 		int indexOfSmallestNode = indexOfNode;
 		int indexOfLeftChild = 2 * indexOfNode + 1;
@@ -23,12 +32,14 @@ public class minHeap {
                 
 		// If left child is smaller than root
 		if ( indexOfLeftChild < n && this.processes.get(indexOfLeftChild).compareTo(this.processes.get(indexOfSmallestNode)) > 0) {
+		if ( indexOfLeftChild < n && this.process.get(indexOfLeftChild).compareTo(this.process.get(indexOfSmallestNode)) > 0) {
 			indexOfSmallestNode = indexOfLeftChild;
 		}
 
 		// If right child is smaller than the smallest so far
 		if ( indexOfRightChild < n &&
 				     this.processes.get(indexOfRightChild).compareTo(this.processes.get(indexOfSmallestNode)) > 0) {
+				     this.process.get(indexOfRightChild).compareTo(this.process.get(indexOfSmallestNode)) > 0) {
 			indexOfSmallestNode = indexOfRightChild;
 		}
 
@@ -39,6 +50,10 @@ public class minHeap {
 			this.processes.set(indexOfNode, this.processes.get(indexOfSmallestNode) );
 			this.processes.set( indexOfSmallestNode, swap );
 
+			Process swap = this.process.get( indexOfNode );
+			this.process.set(indexOfNode, this.process.get(indexOfSmallestNode) );
+			this.process.set( indexOfSmallestNode, swap );
+
 			// Recursively heapify the affected sub-tree
 			heapify(n, indexOfSmallestNode);
 		}
@@ -48,6 +63,11 @@ public class minHeap {
 		boolean output = false;
 		synchronized ( this.lock ) {
 			output = this.processes.add( newProcess );
+
+	public boolean add (Process newProcess) {
+		boolean output = false;
+		synchronized ( this.lock ) {
+			output = this.process.add( newProcess );
 			// Heapify at the root.
 			this.sort();
 		}
@@ -57,6 +77,7 @@ public class minHeap {
 	public void clear () {
 		synchronized ( this.lock ) {
 			this.processes.clear();
+			this.process.clear();
 		}
 	}
 
@@ -74,6 +95,19 @@ public class minHeap {
 				this.processes.set( i, temp );
 
 				// call max heapify on the reduced processes
+
+			// Build heap (rearrange array)
+			for ( int i = this.process.size() / 2 - 1; i >= 0; i-- )
+				heapify(this.process.size(), i );
+
+			// One by one extract an element from heap
+			for ( int i = this.process.size() - 1; i >= 0; i-- ) {
+				// Move current root to end
+				Process temp = this.process.get( 0 );
+				this.process.set(0, this.process.get( i ) );
+				this.process.set( i, temp );
+
+				// call max heapify on the reduced heap
 				heapify( i, 0 );
 			}
 		}
@@ -82,6 +116,9 @@ public class minHeap {
 	public Node removeHead () throws InterruptedException {
 		synchronized ( this.lock ) {
 			Node head = this.processes.remove(0);
+	public Process removeHead () throws InterruptedException {
+		synchronized ( this.lock ) {
+			Process head = this.process.remove(0);
 			this.sort();
 			return head;
 		}
@@ -89,6 +126,7 @@ public class minHeap {
 
 	public int size () {
 		return this.processes.size();
+		return this.process.size();
 	}
 
 	public boolean isEmpty () {

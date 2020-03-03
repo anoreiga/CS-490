@@ -7,6 +7,10 @@ import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import sun.security.pkcs11.wrapper.Functions;
 
+//import java.time.LocalDateTime;
+import java.time.*;
+import java.time.format.DateTimeFormatter;
+
 /**
  * Consumes tasks and allows them to execute.
  * Requests nodes from the process queue, simulates execution for each process,
@@ -68,11 +72,28 @@ public class consumerThread implements Runnable {
 	public consumerThread ( minHeap heap ) {
 		this.minHeap = heap;
 		this.id = ++ lastId;
+    
+	private static int lastId = 0;
+	private final long wait_miliseconds = 33;
+
+	private minHeap processQueue;
+	private int ProcessID;
+
+	private boolean isRunning;
+	private String tabsPrepend;
+
+	private int totalConsumed;
+
+	public consumerThread ( minHeap queue) {
+		this.processQueue = queue;
+		this.ProcessID = ++ lastId;
 		this.totalConsumed = 0;
 		this.isRunning = false;
 
 		StringBuilder sb = new StringBuilder();
 		for ( int i = 0; i < this.id; i++ ) {
+
+		for ( int i = 0; i < this.ProcessID; i++ ) {
 			sb.append( '\t' );
 		}
 
@@ -86,6 +107,11 @@ public class consumerThread implements Runnable {
 	 */
 	public int getId () {
 		return id;
+
+	 * @return the ProcessID of the consumer thread.
+	 */
+	public int getId () {
+		return ProcessID;
 	}
 
 	/**
@@ -96,7 +122,6 @@ public class consumerThread implements Runnable {
 	}
 
 	/**
-	 * Requests a node from {@link ProcessQueue} if there is one. If the queue is empty, waits.
 	 *
 	 * @return the requested node.
 	 */
@@ -109,6 +134,20 @@ public class consumerThread implements Runnable {
 
 			if ( flags.producerComplete = true ) {
 				report("thinks there won't be any more nodes to request.");
+
+	 * Requests a node from {@link minHeap} if there is one. If the queue is empty, waits.
+	 *
+	 * @return the requested node.
+	 */
+	public Process requestNode () {
+		report( "is requesting a new node." );
+
+		while ( this.processQueue.isEmpty() ) {
+
+			report( "cannot find new node." );
+
+			if ( flags.isProducerIsDone() ) {
+				report( "thinks there won't be any more nodes to request." );
 				this.isRunning = false;
 				return null;
 			} else {
@@ -119,16 +158,14 @@ public class consumerThread implements Runnable {
 		try {
 			return this.minHeap.removeHead();
 		} catch ( InterruptedException e ) {
+			return this.processQueue.removeHead();
+		} 
+                catch ( InterruptedException e ) {
 			report( "was interrupted." );
 			return null;
 		}
 	}
 
-	/**
-	 * Reports the given message to the screen.
-	 *
-	 * @param message The message to send out to.
-	 */
 	private void report ( String message ) {
 		System.out.println( String.format( "%sConsumer %d %s", this.tabsPrepend, this.getId(), message ) );
 	}
@@ -139,7 +176,9 @@ public class consumerThread implements Runnable {
 	private void idle () {
 		try {
 			report( "is idling..." );
-			Thread.sleep( IDLE_WAIT_IN_MILLISECONDS );
+			Thread.sleep(wait_miliseconds);
+
+			Thread.sleep(wait_miliseconds );
 		} catch ( InterruptedException e ) {
 			report( "was interrupted." );
 		}
@@ -173,6 +212,29 @@ public class consumerThread implements Runnable {
 				this.totalConsumed++;
 
 			} catch ( InterruptedException ex ) {
+
+    DateTimeFormatter formatDate = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
+		this.isRunning = true;
+		while ( this.isRunning ) {
+			try {
+				Process node = this.requestNode();
+
+				if ( node == null ) {
+					continue;
+				}
+
+				node.run();
+
+				LocalDateTime processFinished = LocalDateTime.now();
+
+				String nodeStatistics = node.toString();
+
+				report( String.format( "finished %s at %s", nodeStatistics, formatDate.format(processFinished)));
+
+				this.totalConsumed++;
+
+			} catch ( InterruptedException ex ) 
+                        {
 				report( "was interrupted." );
 			}
 		}
