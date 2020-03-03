@@ -5,16 +5,24 @@
  */
 package program1;
 
+import java.text.SimpleDateFormat;
+import java.time.*;
+
 class ThreadFlags {
         boolean producerComplete = false; 
 
         public ThreadFlags(boolean producerComplete) 
         {
-            this.producerComplete = true; 
+            this.producerComplete = false; 
         }
 
         public boolean producerComplete(boolean b) {
             return this.producerComplete;
+        }
+        
+        //updates flag when the producer is done 
+        public synchronized void setProducerComplete (boolean producerComplete) {
+            this.producerComplete = producerComplete;
         }
 
     } 
@@ -30,34 +38,71 @@ class RandomNumber {
 //node data structure 
 class Node implements Comparable {
     
-    //TODO: rework Run function for node 
-    private String processID;
+    private int processID;
     private int priority;
-    private int run_time;
-    
+    private int timeSlice;
+    private LocalDateTime nodeStart;
+    private int prevID = 0; 
+        
     public Node(String processID, int priority, int runTime) {
-        this.processID = processID;
+        this.processID = ++ prevID;
         this.priority = priority; 
-        this.run_time = run_time;
+        this.timeSlice = timeSlice;
+       
     }
     
-    public String getprocessID() {
+    public int getprocessID() {
         return processID;
     }
     
-    public int getTime() {
-        return run_time;
+    public int getPriority () {
+        return priority;
     }
     
-    public int getRunTime() {
-        return run_time;
+    public void setPriority(int priority) { 
+        this.priority = priority;
+    }
+    
+    public int getTime() {
+        return timeSlice;
+    }
+    
+    public void setTime() { 
+        this.timeSlice = timeSlice;
+    }
+    
+    public LocalDateTime getStart() { 
+        return nodeStart;
+    }
+    
+    public void setStart(LocalDateTime nodeStart) {
+        this.nodeStart = nodeStart;
     }
     
     public String toString() {
-        return processID + "\t" + priority + "\t" + run_time;
+        //return processID + "\t" + priority + "\t" + run_time;
+        SimpleDateFormat sf = new SimpleDateFormat("hh:mm:ss a zzz"); 
+
+        
+        return String.format("Process: ID %d with priority %d (start %s)", this.getprocessID(), this.getPriority(), sf.format(this.getStart()));
+   
+    }
+    
+    public void run() throws InterruptedException {
+        this.setStart(java.time.LocalDateTime.now());
+        Thread.sleep(this.timeSlice);
+    
     }
     
     public int compareTo(Object o) {
-        return this.priority - ((Node)o).priority;
+       //@Override
+        if(o instanceof Node) { 
+            Node other = (Node) o; 
+            return Integer.compare(this.getPriority(), other.getPriority());
+    }
+        return - 1; 
+    }
+}
+    }
     }
 }

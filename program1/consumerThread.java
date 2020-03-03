@@ -16,11 +16,11 @@ public class consumerThread implements Runnable {
 	/**
 	 * The maximum number of nodes to produce.
 	 */
-	private final int MAX_NUM_OF_NODES_TO_PRODUCE = 75;
+	private final int maxNodes = 75;
 	/**
 	 * The time to wait in idle.
 	 */
-	private final int IDLE_TIME_IN_MILLISECONDS = 66;
+	private final int idleTime = 66;
 	/**
 	 * The counter for the amount of nodes created.
 	 */
@@ -160,7 +160,7 @@ public class consumerThread implements Runnable {
 					continue;
 				}
                                 //TODO: rework Run() function for the node class
-				//nodeToProcess.run()
+				nodeToProcess.run()
 
 				LocalDateTime finishedProcessingTime = java.time.LocalDateTime.now();
 

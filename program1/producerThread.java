@@ -11,7 +11,7 @@ public class producerThread implements Runnable {
 	/**
 	 * The time to wait in idle.
 	 */
-	private final int IDLE_TIME_IN_MILLISECONDS = 66;
+	private final int idleTime = 66;
 	/**
 	 * The counter for the amount of nodes created.
 	 */
@@ -119,7 +119,7 @@ public class producerThread implements Runnable {
 	 */
 	private void idle () {
 		try {
-			Thread.sleep( IDLE_TIME_IN_MILLISECONDS );
+			Thread.sleep(idleTime );
 		} catch ( InterruptedException e ) {
 			System.out.println( "Producer was interrupted!" );
 		}
