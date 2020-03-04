@@ -5,6 +5,10 @@ import java.text.SimpleDateFormat;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 
+/*
+/Class ThreadFlags will handle communication between 
+/the producer and consumer threads.
+*/
 class ThreadFlags {
   
         private boolean producerComplete; 
@@ -25,8 +29,11 @@ class ThreadFlags {
 
     } 
 
-//generating a random number to use in node creation 
+/*
+/Class RandomNumber
+*/
 class RandomNumber {
+    //generating a random number to use in node creation 
     public static int getRandomNumber(int min, int max) {
             return (int)(Math.random() * (max - min) + min);
     }
