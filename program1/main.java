@@ -2,9 +2,14 @@
 //DATE: 3/9/20
 //CLASS: CS 490-01
 //PURPOSE: this program simulates synchronization of processes and threading in Java
+//         featuring the Producer/Consumer problem 
 
 package program1;
 
+/*
+/Class main: 
+/initializes and runs the main functionality of the program
+*/
 public class main {
     public static void main(String[] args) { 
         

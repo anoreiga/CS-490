@@ -1,46 +1,47 @@
 package program1;
 
-import sun.security.pkcs11.wrapper.Functions;
-/**
- * Thread that produces nodes for the consumer threads to consume and process.
+/*
+ * Class producerThread that produces nodes for the consumer threads to consume.
  */
 public class producerThread implements Runnable {
      
+        //sets the idle wait count in miliseconds
         private final long idleWait = 33;
+        
+        //sets the maximum number of nodes to produce in miliseconds
         private final int maxNodes = 75;
-        private int nodeCount;
+        
+        //counter for total number of nodes created
+        private int totalNodesCreated;
+        
+        //counter for how many times the producer wakes
+        //since it can't wake infinitely
         private int wakeCount;
-	/**
-	 * The queue for the processes to produce to.
-	 */
+        
+	//the heap the producer produces nodes to
 	private minHeap minHeap;
 
-	/**
-	 * Communicates the flags between producer and consumer threads.
-	 */
+	//flags to help the producer and consumer threads communicate with each other
 	private ThreadFlags flags;
 
-	/**
-	 * Creates a new producer thread with the given shared resource.
-	 *
-	 * @param processQueue The queue that holds all processes to add to.
-	 * @param fc           The way for threads to communicate the flags they share.
-	 */
-	public producerThread ( minHeap minHeap, ThreadFlags TF ) {
-		this.minHeap = minHeap;
+	//producerThread sets the minHeap and the ThreadFlags
+	public producerThread (minHeap heap, ThreadFlags TF) 
+        {
+		this.minHeap = heap;
 		this.flags = TF;
 
 		this.wakeCount = 0;
-		this.nodeCount = 0;
+		this.totalNodesCreated = 0;
 	}
 
+        //gets the thread flags
 	public ThreadFlags getFlags () {
 		return flags;
 	}
 
-
+        //gets the current node count
 	public int getNodeCount () {
-		return nodeCount;
+		return totalNodesCreated;
 	}
 
         //returns the wake up count
@@ -51,19 +52,21 @@ public class producerThread implements Runnable {
         //creates an instance of a Node 
 	public Node createNode () {
 		Node node = new Node(RandomNumber.getRandomNumber(1, 100), RandomNumber.getRandomNumber(10, 30));
-		nodeCount++;
+		totalNodesCreated++;
 		return node;
 	}
 
+        //determines whether or not the producer is finished creating nodes
 	public boolean isFinished() {
-		return this.nodeCount >= this.maxNodes;
+		return this.totalNodesCreated >= this.maxNodes;
 	}
 
+        //gets the remaining nodes in the heap
 	private int getRemainingNodes() {
-		return this.maxNodes - this.nodeCount;
+		return this.maxNodes - this.totalNodesCreated;
 	}
         
-        //
+        //generate a random number of notes for the producer to create
 	private int getRandomNodes () {
 		int possibility = RandomNumber.getRandomNumber(8, this.maxNodes / 4 );
                 int nodesRemaining = getRemainingNodes(); 
@@ -88,6 +91,8 @@ public class producerThread implements Runnable {
         //add nodes to heap as it runs
 	@Override
 	public void run() {
+            
+                //run the function until the Producer is finished creating nodes
 		while (!isFinished()) 
                 {
                         //set the number of nodes to produce to random
@@ -97,11 +102,15 @@ public class producerThread implements Runnable {
 				this.minHeap.add( producedNode );
 			}
                         
+                        //prints out information related to the producer thread 
+                        //such as how many nodes it's produced during the current cycle 
+                        //as well as whether or not the thread is in an idle state
 			System.out.println(String.format("Producer has produced ~%d new nodes.", nodeToAdd));
 			System.out.println("Producer is idling...");
 			idle();
 		}
 
+                //prints out that the producer has completed work on the heap (producing nodes)
 		System.out.println("Producer has completed its tasks.");
 		
                 //set producer complete flag

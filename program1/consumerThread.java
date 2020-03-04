@@ -1,68 +1,50 @@
 package program1;
 
-//import com.sun.org.apache.bcel.internal.classfile.Utility;
-import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Date;
-import sun.security.pkcs11.wrapper.Functions;
-import java.time.*;
-import java.time.format.DateTimeFormatter;
 
-/**
- * Consumes tasks and allows them to execute.
- * Requests nodes from the process queue, simulates execution for each process,
- * reports stats on the process and its task, etc.
+/*
+ * Class consumerThread: 
+ * consumes tasks and allows them to execute; requests nodes from the heap and simulates their execution 
+ * also reports statistics on the process 
  */
 public class consumerThread implements Runnable {
-	/**
-	 * The maximum number of nodes to produce.
-	 */
+    
+        //sets the maximum number of nodes to produce in miliseconds
 	private final int maxNodes = 75;
-	/**
-	 * The time to wait in idle.
-	 */
+        
+        //sets the idle wait count in miliseconds
 	private final int idleWait = 66;
-	/**
-	 * The counter for the amount of nodes created.
-	 */
-	private int nodeCount;
-	/**
-	 * The counter for the amount of times producer thread has awoken.
-	 */
+	
+        //counter for total number of nodes created
+	private int totalNodesCreated;
+
+        //counter for how many times the producer wakes
+        //since it can't wake infinitely        
 	private int wakeUpCount;
-	/**
-	 * The queue for the processes to produce to.
-	 */
+	
+        //total number of nodes consumed by a particular consumer Thread
+	private int totalConsumed;
+
+        //the heap the producer produces nodes to
 	private minHeap minHeap;
 
-	/**
-	 * Communicates the flags between producer and consumer threads.
-	 */
+	//flags to help the producer and consumer threads communicate with each other
 	private ThreadFlags flags;
-	/**
-	 * The consumerID of the previous consumer thread.
-	 */
+
+        //consumerID of the previous consumer thread
 	private static int lastId = 0;
 	
         //consumer thread's ID
 	private int consumerID;
-	/**
-	 * True if the thread is to continue consuming.
-	 */
+
+        //True if consumer thread is still able to continue consuming
 	private boolean isRunning;
 
-	/**
-	 * A variable to improve time reporting information about the thread.
-	 */
+	//makes tabbing/formatting outputs easier
 	private String tabsPrepend;
 
-	/**
-	 * The total number of nodes consumed by this consumer.
-	 */
-	private int totalConsumed;
-
-	public consumerThread (minHeap heap, ThreadFlags TF ) {
+        //
+	public consumerThread (minHeap heap, ThreadFlags TF) {
 
 		this.minHeap = heap;
 		this.consumerID = ++ lastId;
@@ -70,6 +52,7 @@ public class consumerThread implements Runnable {
 		this.totalConsumed = 0;
 		this.isRunning = false;
 
+                //to make tabbing outputs easier
 		StringBuilder sb = new StringBuilder();
 		for ( int i = 0; i < this.consumerID; i++ ) {
 			sb.append( '\t' );
@@ -78,29 +61,17 @@ public class consumerThread implements Runnable {
 		this.tabsPrepend = sb.toString();
 	}
 
-	/**
-	 * @return the id of the consumer thread.
-	 */
-	/**
-	 * @return the id of the consumer thread.
-	 */
-
-    /**
-     *
-     * @return the consumerID of the consumer thread.
-     */
+    //returns the consumerID of the current consumer thread
     public int getConsumerID () {
-		return consumerID;
+            return consumerID;
 	}
 
-	public int getTotalConsumed () {
-		return totalConsumed;
+    //returns the total consumed nodes by the current consumer threads
+    public int getTotalConsumed () {
+            return totalConsumed;
 	}
 
-	/**
-	 *
-	 * @return the requested node.
-	 */
+	//returns a node when the consumer requests them
 	public Node requestNode () {
 		report( "is requesting a new node." );
 
@@ -109,7 +80,7 @@ public class consumerThread implements Runnable {
 			report( "cannot find new node." );
 
 			if (flags.isProducerComplete()) {
-				report("thinks there won't be any more nodes to request.");
+				report("thinks there aren't any nodes left on the heap.");
                                 this.isRunning = false; 
                                 return null; 
                         }
@@ -128,13 +99,12 @@ public class consumerThread implements Runnable {
 		}
 	}
 
-	private void report ( String message ) {
-		System.out.println( String.format( "%sConsumer %d %s", this.tabsPrepend, this.getConsumerID(), message ) );
+        //function to handle reports on consumer thread statuses
+	private void report (String message) {
+		System.out.println( String.format("%sConsumer %d %s", this.tabsPrepend, this.getConsumerID(), message));
 	}
 
-	/**
-	 * Waits for the given time in ms.
-	 */
+	//tells the consumer to wait for the specified idleWait time
 	private void idle () {
 		try {
                         report( "is idling..." );
