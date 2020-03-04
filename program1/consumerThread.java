@@ -151,9 +151,9 @@ public class consumerThread implements Runnable {
 	 */
 	@Override
 	public void run () {
-                DateTimeFormatter formatDate = DateTimeFormatter.ofPattern("MM/dd/yy hh:mm:ss");
+                //DateTimeFormatter formatDate = DateTimeFormatter.ofPattern("MM/dd/yy hh:mm:ss");
                 this.isRunning = true;
-		while ( this.isRunning ) {
+		while (this.isRunning) {
 			try {
 				Node nodeToProcess = this.requestNode();
 
@@ -162,20 +162,19 @@ public class consumerThread implements Runnable {
 				}
 				nodeToProcess.run();
 
-				LocalDateTime finishedProcessingTime = java.time.LocalDateTime.now();
+				LocalDateTime finishedProcessingTime = CurrentTime.getCurrentTime();
 
 				String nodeStatistics = nodeToProcess.toString();
                                 //Date dateFormat = new Date();
                                 //SimpleDateFormat sf = new SimpleDateFormat("hh:mm:ss a zzz"); 
                                 
 				report(String.format("finished %s at %s", nodeStatistics, TimeFormat.formatDateTime(finishedProcessingTime)));
-
 				this.totalConsumed++;
 
 			} 
                         catch ( InterruptedException ex ) 
                         {
-                            report("was interrupted");
+                            report("process was interrupted");
                         }
                 }
                

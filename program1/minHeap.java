@@ -1,10 +1,8 @@
 package program1;
 
 import java.util.ArrayList;
-//********************
-//Handles sorting/processesing of nodes
-//********************
 
+//Handles sorting/processesing of nodes
 public class minHeap {
 
 	private final Object lock;

@@ -91,19 +91,18 @@ public class producerThread implements Runnable {
 		while (!isFinished()) 
                 {
                         //set the number of nodes to produce to random
-			int produceNodes = getRandomNodes();
-			for ( int i = 0; i < produceNodes; i++ ) {
-
+			int nodeToAdd = getRandomNodes();
+			for (int i = 0; i < nodeToAdd; i++) {
 				Node producedNode = createNode();
 				this.minHeap.add( producedNode );
-
 			}
-			System.out.println( String.format( "Producer has produced ~%d new nodes.", produceNodes));
-			System.out.println( "Producer is idling..." );
+                        
+			System.out.println(String.format("Producer has produced ~%d new nodes.", nodeToAdd));
+			System.out.println("Producer is idling...");
 			idle();
 		}
 
-		System.out.println( "Producer has completed its tasks." );
+		System.out.println("Producer has completed its tasks.");
 		
                 //set producer complete flag
 		flags.setProducerComplete(true);

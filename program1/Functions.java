@@ -15,11 +15,11 @@ class ThreadFlags {
         }
 
         public boolean isProducerComplete() {
-            return this.producerComplete;
+           return producerComplete;
         }
         
         //updates flag when the producer is done 
-        public synchronized void setProducerComplete (boolean isProducerComplete) {
+        public synchronized void setProducerComplete (boolean producerComplete) {
             this.producerComplete = producerComplete;
         }
 
