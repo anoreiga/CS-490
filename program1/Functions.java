@@ -101,7 +101,7 @@ class Node implements Comparable {
     public String toString() {
         //return processID + "\t" + priority + "\t" + run_time;
         //SimpleDateFormat sf = new SimpleDateFormat("hh:mm:ss a zzz"); 
-        return String.format("ProcessID %d with priority %d (start %s)", this.getprocessID(), this.getPriority(), TimeFormat.formatDateTime(this.getStart()));
+        return String.format("Process: %d with priority %d (start %s)", this.getprocessID(), this.getPriority(), TimeFormat.formatDateTime(this.getStart()));
    
     }
     

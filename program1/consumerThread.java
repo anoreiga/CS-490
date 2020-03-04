@@ -8,19 +8,9 @@ import java.time.LocalDateTime;
  * also reports statistics on the process 
  */
 public class consumerThread implements Runnable {
-    
-        //sets the maximum number of nodes to produce in miliseconds
-	private final int maxNodes = 75;
-        
+   
         //sets the idle wait count in miliseconds
 	private final int idleWait = 66;
-	
-        //counter for total number of nodes created
-	private int totalNodesCreated;
-
-        //counter for how many times the producer wakes
-        //since it can't wake infinitely        
-	private int wakeUpCount;
 	
         //total number of nodes consumed by a particular consumer Thread
 	private int totalConsumed;
@@ -70,6 +60,24 @@ public class consumerThread implements Runnable {
     public int getTotalConsumed () {
             return totalConsumed;
 	}
+    
+            //function to handle reports on consumer thread statuses
+	private void report (String message) {
+		System.out.println( String.format("%sConsumer %d %s", this.tabsPrepend, this.getConsumerID(), message));
+	}
+
+	//tells the consumer to wait for the specified idleWait time
+	private void idle () {
+		try {
+                        report( "is idling..." );
+			Thread.sleep(idleWait);
+
+			Thread.sleep(idleWait );
+		} catch ( InterruptedException e ) {
+			report( "was interrupted." );
+		}
+	}
+
 
 	//returns a node when the consumer requests them
 	public Node requestNode () {
@@ -98,24 +106,7 @@ public class consumerThread implements Runnable {
 			return null;
 		}
 	}
-
-        //function to handle reports on consumer thread statuses
-	private void report (String message) {
-		System.out.println( String.format("%sConsumer %d %s", this.tabsPrepend, this.getConsumerID(), message));
-	}
-
-	//tells the consumer to wait for the specified idleWait time
-	private void idle () {
-		try {
-                        report( "is idling..." );
-			Thread.sleep(idleWait);
-
-			Thread.sleep(idleWait );
-		} catch ( InterruptedException e ) {
-			report( "was interrupted." );
-		}
-	}
-
+        
 	/**
 	 * Consumes the processes in the queue while there are some to get.
 	 */
