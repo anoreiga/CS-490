@@ -7,14 +7,20 @@ package program1;
 
 public class main {
     public static void main(String[] args) { 
+        
+        //creating new heap
         minHeap heap = new minHeap(75);
         
+        //creating instance of flag watcher
         ThreadFlags flags = new ThreadFlags(); 
         
         //creating consumer threads
         consumerThread ct1 = new consumerThread(heap, flags);
         consumerThread ct2 = new consumerThread(heap, flags);
         
+        //creating producer threads
+        producerThread pt1 = new producerThread(heap, flags);
+            
         //initialize consumer threads
         Thread consume1 = new Thread(ct1);
         Thread consume2 = new Thread(ct2);
@@ -22,9 +28,6 @@ public class main {
         //starting consumer threads
         consume1.start();
         consume2.start();
-        
-        //creating producer threads
-        producerThread pt1 = new producerThread(heap, flags);
         
         //initializing producer thread 
         Thread produce1 = new Thread(pt1);
@@ -47,8 +50,5 @@ public class main {
         
         //print out how many nodes are remaining in the heap. 
         System.out.println(String.format("Producer thinks there are %d nodes remaining...", heap.size()));
-                    
         }
-                
     }
-}
